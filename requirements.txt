@@ -1,6 +1,11 @@
-
 fastapi==0.79.0
-orjson==3.4.1
+jose==1.0.0
+passlib==1.7.4
 pydantic==1.9.0
-uvicorn==0.18.2
-uvloop==0.14.0; sys_platform != "win32" and implementation_name == "cpython"
+python-dotenv==1.0.0
+python_jose==3.3.0
+SQLAlchemy==1.4.39
+alembic==1.11.3
+pytest==7.4.0
+uvicorn==0.23.2
+psycopg2-binary
