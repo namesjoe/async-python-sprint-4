@@ -1,8 +1,10 @@
-from fastapi import APIRouter, HTTPException
-
 from logger import get_logger
-from src.db.database import get_user_by_username
-from src.db.db_setup import SessionLocal
+
+from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException
+from sqlalchemy.orm import Session
+
+from src.db.database import get_user_by_username, get_db
 from src.models.model import URL, URLAccess
 
 router = APIRouter()
@@ -10,22 +12,19 @@ logger = get_logger('server')
 
 
 @router.get("/user/status")
-async def get_user_statuses(user=get_user_by_username):
-    db = SessionLocal()
-
+async def get_user_statuses(user=get_user_by_username, db: Session = Depends(get_db)):
     user_urls = db.query(URL).filter(URL.user_id == user.id).all()
     return {"user_urls": user_urls}
 
 
 @router.get("/{short_url_id}/status")
 async def get_url_status(
-        short_url_id: str,
-        full_info: bool = False,
-        max_result: int = 10,
-        offset: int = 0
+    short_url_id: str,
+    full_info: bool = False,
+    max_result: int = 10,
+    offset: int = 0,
+    db: Session = Depends(get_db)
 ):
-    db = SessionLocal()
-
     url = db.query(URL).filter(URL.short_url_id == short_url_id).first()
     if not url:
         raise HTTPException(status_code=404, detail="URL not found")
